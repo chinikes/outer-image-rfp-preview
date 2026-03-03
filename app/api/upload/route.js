@@ -48,7 +48,7 @@ export async function POST(request) {
 
     // ---- Store in Vercel Blob ----
     const blob = await put(`rfps/${Date.now()}-${file.name}`, file, {
-      access: 'private',
+      access: 'public',
       contentType: file.type,
     });
 
