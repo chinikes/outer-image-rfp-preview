@@ -2,7 +2,7 @@ import "./globals.css";
 import Link from "next/link";
 
 export const metadata = {
-  title: "Outer Image — RFP Portal",
+  title: "Prototype — RFP Portal",
   description: "AI-powered RFP proposal automation system",
 };
 
@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
                 </span>
               </div>
               <span className="text-white font-semibold text-base tracking-wide">
-                Outer Image
+                Prototype
               </span>
               <span className="text-brand-teal-accent text-xs font-medium opacity-80 -ml-1">
                 RFP Portal
@@ -50,7 +50,7 @@ export default function RootLayout({ children }) {
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-gold to-brand-gold-light flex items-center justify-center">
               <span className="text-brand-navy font-bold text-xs">LV</span>
             </div>
-            <span className="text-white/80 text-sm font-medium">Laura V.</span>
+            <span className="text-white/80 text-sm font-medium">Peter C.</span>
           </div>
         </nav>
 
