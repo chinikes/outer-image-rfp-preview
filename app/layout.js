@@ -48,7 +48,7 @@ export default function RootLayout({ children }) {
           {/* User Avatar */}
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-gold to-brand-gold-light flex items-center justify-center">
-              <span className="text-brand-navy font-bold text-xs">LV</span>
+              <span className="text-brand-navy font-bold text-xs">PC</span>
             </div>
             <span className="text-white/80 text-sm font-medium">Peter C.</span>
           </div>
