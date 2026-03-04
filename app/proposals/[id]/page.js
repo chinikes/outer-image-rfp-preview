@@ -120,7 +120,32 @@ export default function ProposalViewPage() {
             )}
           </div>
         </div>
-        <button className="px-5 py-2.5 rounded-lg bg-brand-navy text-white text-sm font-semibold hover:opacity-90 border-none cursor-pointer">
+       <button
+          onClick={() => {
+            // Build full draft text from all sections
+            let content = `PROPOSAL DRAFT: ${proposal.rfpName}\n`;
+            content += `Service Line: ${proposal.serviceLine || "N/A"}\n`;
+            content += `Deadline: ${proposal.deadline || "N/A"}\n`;
+            content += `Status: ${proposal.status}\n`;
+            content += `${"=".repeat(60)}\n\n`;
+        
+            sections.forEach((s) => {
+              content += `## ${s.title}\n\n${s.content}\n\n`;
+            });
+        
+            // Trigger download as .md file
+            const blob = new Blob([content], { type: "text/markdown" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${(proposal.rfpName || "proposal").replace(/[^a-zA-Z0-9]/g, "-")}-draft.md`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }}
+          className="px-5 py-2.5 rounded-lg bg-brand-navy text-white text-sm font-semibold hover:opacity-90 border-none cursor-pointer"
+        >
           Export Draft
         </button>
       </div>
