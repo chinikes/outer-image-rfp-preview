@@ -122,23 +122,34 @@ export default function ProposalViewPage() {
         </div>
        <button
           onClick={() => {
-            // Build full draft text from all sections
-            let content = `PROPOSAL DRAFT: ${proposal.rfpName}\n`;
-            content += `Service Line: ${proposal.serviceLine || "N/A"}\n`;
-            content += `Deadline: ${proposal.deadline || "N/A"}\n`;
-            content += `Status: ${proposal.status}\n`;
-            content += `${"=".repeat(60)}\n\n`;
-        
+            let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+          <head><meta charset="utf-8"><title>${proposal.rfpName}</title>
+          <style>
+            body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; line-height: 1.6; color: #333; margin: 1in; }
+            h1 { font-size: 18pt; color: #0F2027; margin-bottom: 4pt; }
+            h2 { font-size: 14pt; color: #2C7A7B; margin-top: 18pt; margin-bottom: 6pt; border-bottom: 1px solid #E2E8F0; padding-bottom: 4pt; }
+            .meta { font-size: 10pt; color: #718096; margin-bottom: 18pt; }
+            p { margin: 6pt 0; }
+          </style></head><body>`;
+          
+            html += `<h1>${proposal.rfpName}</h1>`;
+            html += `<div class="meta">Service Line: ${proposal.serviceLine || "N/A"} &nbsp;|&nbsp; Deadline: ${proposal.deadline || "N/A"} &nbsp;|&nbsp; Status: ${proposal.status}</div>`;
+          
             sections.forEach((s) => {
-              content += `## ${s.title}\n\n${s.content}\n\n`;
+              html += `<h2>${s.title}</h2>`;
+              const paragraphs = s.content.split(/\n\n+/);
+              paragraphs.forEach((p) => {
+                if (p.trim()) html += `<p>${p.replace(/\n/g, "<br>")}</p>`;
+              });
             });
-        
-            // Trigger download as .md file
-            const blob = new Blob([content], { type: "text/markdown" });
+          
+            html += `</body></html>`;
+          
+            const blob = new Blob([html], { type: "application/msword" });
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            a.download = `${(proposal.rfpName || "proposal").replace(/[^a-zA-Z0-9]/g, "-")}-draft.md`;
+            a.download = `${(proposal.rfpName || "proposal").replace(/[^a-zA-Z0-9]/g, "-")}-draft.doc`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
