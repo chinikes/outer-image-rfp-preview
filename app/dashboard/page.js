@@ -70,10 +70,10 @@ export default function DashboardPage() {
       : proposals.filter((p) => p.status === filter);
 
   const stats = {
-    total: proposals.length,
-    active: proposals.filter((p) => !["Finalized", "Error"].includes(p.status)).length,
-    ready: proposals.filter((p) => p.status === "Ready for Review").length,
-  };
+  total: proposals.length,
+  active: proposals.filter(p => !["Finalized", "Error"].includes(p.status)).length,
+  ready: proposals.filter(p => p.status === "Ready for Review").length
+};
 
   return (
     <div className="max-w-[960px] mx-auto px-6 py-12">
