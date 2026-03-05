@@ -42,12 +42,6 @@ export default function DashboardPage() {
 
   const statuses = ["All", "Received", "Parsing", "Drafting", "Ready for Review", "Finalized"];
 
-  const [loading, setLoading] = useState(true);
-  const [proposals, setProposals] = useState([]);
-
-  const [loading, setLoading] = useState(true);
-  const [proposals, setProposals] = useState([]);
-
 useEffect(() => {
   async function fetchProposals() {
     try {
