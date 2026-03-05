@@ -45,7 +45,10 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [proposals, setProposals] = useState([]);
 
-  useEffect(() => {
+  const [loading, setLoading] = useState(true);
+  const [proposals, setProposals] = useState([]);
+
+useEffect(() => {
   async function fetchProposals() {
     try {
       const res = await fetch('/api/proposals', { cache: 'no-store' });
@@ -58,10 +61,9 @@ export default function DashboardPage() {
     }
   }
 
-  fetchProposals(); // initial load
-
-  const interval = setInterval(fetchProposals, 10000); // refresh every 10s
-  return () => clearInterval(interval); // cleanup
+  fetchProposals();
+  const interval = setInterval(fetchProposals, 10000);
+  return () => clearInterval(interval);
 }, []);
 
   const filtered =
