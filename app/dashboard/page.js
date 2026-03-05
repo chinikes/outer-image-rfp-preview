@@ -42,14 +42,19 @@ export default function DashboardPage() {
 
   const statuses = ["All", "Received", "Parsing", "Drafting", "Ready for Review", "Finalized"];
 
+  const [loading, setLoading] = useState(true);
+  const [proposals, setProposals] = useState([]);
+
   useEffect(() => {
   async function fetchProposals() {
     try {
       const res = await fetch('/api/proposals', { cache: 'no-store' });
       const data = await res.json();
-      setProposals(data.proposals);
+      setProposals(data.proposals || []);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   }
 
