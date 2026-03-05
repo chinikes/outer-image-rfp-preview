@@ -43,22 +43,21 @@ export default function DashboardPage() {
   const statuses = ["All", "Received", "Parsing", "Drafting", "Ready for Review", "Finalized"];
 
   useEffect(() => {
-    async function fetchProposals() {
-      try {
-        const res = await fetch("/api/proposals");
-        const data = await res.json();
-        setProposals(data.proposals || []);
-        if (data.configured === false) setConfigured(false);
-      } catch (err) {
-        console.error("Failed to fetch proposals:", err);
-      } finally {
-        setLoading(false);
-      }
+  async function fetchProposals() {
+    try {
+      const res = await fetch('/api/proposals', { cache: 'no-store' });
+      const data = await res.json();
+      setProposals(data.proposals);
+    } catch (err) {
+      console.error(err);
     }
-    fetchProposals();
-    const interval = setInterval(fetchProposals, 30000);
-    return () => clearInterval(interval);
-  }, []);
+  }
+
+  fetchProposals(); // initial load
+
+  const interval = setInterval(fetchProposals, 10000); // refresh every 10s
+  return () => clearInterval(interval); // cleanup
+}, []);
 
   const filtered =
     filter === "All"
