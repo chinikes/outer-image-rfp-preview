@@ -184,12 +184,12 @@ export default function ProposalViewPage() {
                     ? val.map((item, i) => (
                         <div key={i} style={{ display: "flex", gap: 8, marginBottom: 4 }}>
                           <span style={{ color: "#A0AEC0" }}>•</span>
-                          <span>{item}</span>
+                          <span>{typeof item === "object" ? JSON.stringify(item) : item}</span>
                         </div>
                       ))
-                    : typeof val === "object"
+                    : typeof val === "object" && val !== null
                     ? JSON.stringify(val, null, 2)
-                    : val}
+                    : String(val ?? "")}
                 </div>
               </div>
             ))}
