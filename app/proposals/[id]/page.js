@@ -174,7 +174,16 @@ export default function ProposalViewPage() {
                   {key.replace(/([A-Z])/g, " $1").trim()}
                 </div>
                 <div className="text-[13px] text-gray-700 leading-relaxed">
-                  {typeof val === "string" ? val : JSON.stringify(val)}
+                  {Array.isArray(val)
+                    ? val.map((item, i) => (
+                        <div key={i} style={{ display: "flex", gap: 8, marginBottom: 4 }}>
+                          <span style={{ color: "#A0AEC0" }}>•</span>
+                          <span>{item}</span>
+                        </div>
+                      ))
+                    : typeof val === "object"
+                    ? JSON.stringify(val, null, 2)
+                    : val}
                 </div>
               </div>
             ))}
