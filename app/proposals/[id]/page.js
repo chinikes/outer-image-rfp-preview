@@ -139,7 +139,13 @@ export default function ProposalViewPage() {
               html += `<h2>${s.title}</h2>`;
               const paragraphs = s.content.split(/\n\n+/);
               paragraphs.forEach((p) => {
-                if (p.trim()) html += `<p>${p.replace(/\n/g, "<br>")}</p>`;
+                if (p.trim()) {
+                  let formatted = p
+                    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                    .replace(/\n/g, '<br>');
+                  html += `<p>${formatted}</p>`;
+                }
               });
             });
           
