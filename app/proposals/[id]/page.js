@@ -125,11 +125,11 @@ export default function ProposalViewPage() {
             let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
           <head><meta charset="utf-8"><title>${proposal.rfpName}</title>
           <style>
-            body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.6; color: #333; margin: 1in; }
-            h1 { font-size: 18pt; color: #0F2027; margin-bottom: 4pt; }
-            h2 { font-size: 14pt; color: #2C7A7B; margin-top: 18pt; margin-bottom: 6pt; border-bottom: 1px solid #E2E8F0; padding-bottom: 4pt; }
-            .meta { font-size: 10pt; color: #718096; margin-bottom: 18pt; }
-            p { margin: 6pt 0; }
+            body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.15; color: #333; margin: 0.5in 1in; }
+            h1 { font-size: 18pt; color: #0F2027; margin: 0 0 4pt 0; }
+            h2 { font-size: 13pt; color: #2C7A7B; margin: 12pt 0 4pt 0; border-bottom: 1px solid #E2E8F0; padding-bottom: 2pt; }
+            p { margin: 0 0 6pt 0; }
+            .meta { font-size: 10pt; color: #718096; margin: 0 0 12pt 0; }
           </style></head><body>`;
           
             html += `<h1>${proposal.rfpName}</h1>`;
