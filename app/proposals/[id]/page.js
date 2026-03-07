@@ -232,7 +232,9 @@ export default function ProposalViewPage() {
             className="text-sm text-gray-700 leading-[1.8]"
             dangerouslySetInnerHTML={{
               __html: (sections[activeSection]?.content || '')
-                .replace(/\n{3,}/g, '\n\n')
+                .replace(/\r\n/g, '\n')
+                .replace(/\*\*(.+?)\*\*\n+/g, '<strong>$1</strong>\n')
+                .replace(/\n+\*\*(.+?)\*\*/g, '\n<strong>$1</strong>')
                 .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.+?)\*/g, '<em>$1</em>')
                 .replace(/^### (.+)$/gm, '<h4 style="font-size:15px;font-weight:700;margin:16px 0 4px;color:#0F2027">$1</h4>')
