@@ -42,12 +42,7 @@ export default function RootLayout({ children }) {
               >
                 Dashboard
               </Link>
-              <Link
-                href="/admin"
-                className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-white/60 hover:text-brand-teal-accent hover:bg-white/5 transition-all no-underline"
-              >
-                Admin
-              </Link>
+            </div>
             </div>
           </div>
 
