@@ -233,15 +233,15 @@ export default function ProposalViewPage() {
             dangerouslySetInnerHTML={{
               __html: (sections[activeSection]?.content || '')
                 .replace(/\r\n/g, '\n')
-                .replace(/\*\*(.+?)\*\*\n+/g, '<strong>$1</strong>\n')
-                .replace(/\n+\*\*(.+?)\*\*/g, '\n<strong>$1</strong>')
                 .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.+?)\*/g, '<em>$1</em>')
-                .replace(/^### (.+)$/gm, '<h4 style="font-size:15px;font-weight:700;margin:16px 0 4px;color:#0F2027">$1</h4>')
+                .replace(/^### (.+)$/gm, '<h4 style="font-size:15px;font-weight:700;margin:12px 0 2px;color:#0F2027">$1</h4>')
                 .replace(/^## (.+)$/gm, '<h3 style="font-size:16px;font-weight:700;margin:20px 0 6px;color:#0F2027">$1</h3>')
                 .replace(/\n\n+/g, '<br><br>')
                 .replace(/\n/g, '<br>')
                 .replace(/<\/strong>(<br>)+/g, '</strong> ')
+                .replace(/<\/h4>(<br>)+/g, '</h4>')
+                .replace(/<\/h3>(<br>)+/g, '</h3>')
             }}
           />
         </div>
