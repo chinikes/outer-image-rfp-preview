@@ -125,7 +125,7 @@ export default function ProposalViewPage() {
             let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
           <head><meta charset="utf-8"><title>${proposal.rfpName}</title>
           <style>
-            body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.15; color: #333; margin: 0.5in 1in; }
+            body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.15; color: #333; margin: 0.5in 0.5in; }
             h1 { font-size: 18pt; color: #0F2027; margin: 0 0 4pt 0; }
             h2 { font-size: 13pt; color: #2C7A7B; margin: 12pt 0 4pt 0; border-bottom: 1px solid #E2E8F0; padding-bottom: 2pt; }
             p { margin: 0 0 6pt 0; }
