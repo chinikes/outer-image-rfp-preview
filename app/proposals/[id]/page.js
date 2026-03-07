@@ -141,7 +141,7 @@ export default function ProposalViewPage() {
               paragraphs.forEach((p) => {
                 if (p.trim()) {
                   let formatted = p
-                    .replace(/^### (.+)$/gm, '<h4 style="font-size:12pt;font-weight:bold;margin:8pt 0 2pt;color:#333">$1</h4>')
+                    .replace(/^### (.+)$/gm, '<strong>$1</strong>')
                     .replace(/^## (.+)$/gm, '<h3 style="font-size:13pt;font-weight:bold;margin:10pt 0 4pt;color:#2C7A7B">$1</h3>')
                     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
                     .replace(/\*(.+?)\*/g, '<em>$1</em>')
