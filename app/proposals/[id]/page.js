@@ -182,16 +182,77 @@ export default function ProposalViewPage() {
                   {key.replace(/([A-Z])/g, " $1").trim()}
                 </div>
                 <div className="text-[13px] text-gray-700 leading-relaxed">
-                  {Array.isArray(val)
-                    ? val.map((item, i) => (
-                        <div key={i} style={{ display: "flex", gap: 8, marginBottom: 4 }}>
-                          <span style={{ color: "#A0AEC0" }}>•</span>
-                          <span>{typeof item === "object" ? JSON.stringify(item) : item}</span>
+                  {(() => {
+                    // Helper: try to parse a stringified JSON value
+                    const tryParse = (v) => {
+                      if (typeof v !== "string") return v;
+                      const trimmed = v.trim();
+                      if ((trimmed.startsWith("{") && trimmed.endsWith("}")) || (trimmed.startsWith("[") && trimmed.endsWith("]"))) {
+                        try { return JSON.parse(trimmed); } catch { /* fall through */ }
+                      }
+                      return v;
+                    };
+
+                    // Helper: render an object as a clean line
+                    const renderObject = (obj) => {
+                      // Pattern: {name, description}
+                      if (obj.name) {
+                        return <><strong className="text-gray-900">{obj.name}</strong>{obj.description ? <> — {obj.description}</> : ""}</>;
+                      }
+                      // Pattern: {criterion, weight}
+                      if (obj.criterion) {
+                        return <><strong className="text-gray-900">{obj.criterion}</strong>{obj.weight ? <span className="text-gray-400 ml-1">({obj.weight})</span> : ""}</>;
+                      }
+                      // Pattern: {title, ...anything}
+                      if (obj.title) {
+                        const rest = Object.entries(obj).filter(([k]) => k !== "title").map(([, v]) => String(v)).join(" · ");
+                        return <><strong className="text-gray-900">{obj.title}</strong>{rest ? <> — {rest}</> : ""}</>;
+                      }
+                      // Generic: first value bold, rest as details
+                      const entries = Object.entries(obj);
+                      if (entries.length <= 3) {
+                        const [first, ...rest] = entries;
+                        return <><strong className="text-gray-900">{String(first[1])}</strong>{rest.length > 0 ? <> — {rest.map(([, v]) => String(v)).join(" · ")}</> : ""}</>;
+                      }
+                      // Many keys: render as key: value pairs
+                      return entries.map(([k, v], j) => (
+                        <span key={k}>{j > 0 ? " · " : ""}<strong className="text-gray-900">{k}:</strong> {String(v)}</span>
+                      ));
+                    };
+
+                    // Helper: render a single item (object or string)
+                    const renderItem = (item, i) => {
+                      const parsed = tryParse(item);
+                      return (
+                        <div key={i} className="flex gap-2 mb-1.5">
+                          <span className="text-gray-400 mt-px">•</span>
+                          <span>
+                            {typeof parsed === "object" && parsed !== null
+                              ? renderObject(parsed)
+                              : String(parsed)}
+                          </span>
                         </div>
-                      ))
-                    : typeof val === "object" && val !== null
-                    ? JSON.stringify(val, null, 2)
-                    : String(val ?? "")}
+                      );
+                    };
+
+                    // Main render
+                    const parsed = tryParse(val);
+
+                    if (Array.isArray(parsed)) {
+                      return parsed.map((item, i) => renderItem(item, i));
+                    }
+
+                    if (typeof parsed === "object" && parsed !== null) {
+                      return Object.entries(parsed).map(([k, v]) => (
+                        <div key={k} className="mb-1">
+                          <strong className="text-gray-900">{k.replace(/([A-Z])/g, " $1").trim()}:</strong>{" "}
+                          {String(v)}
+                        </div>
+                      ));
+                    }
+
+                    return String(val ?? "");
+                  })()}
                 </div>
               </div>
             ))}
