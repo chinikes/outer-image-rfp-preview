@@ -188,41 +188,49 @@ export default function ProposalViewPage() {
                       if (typeof v !== "string") return v;
                       const trimmed = v.trim();
                       if ((trimmed.startsWith("{") && trimmed.endsWith("}")) || (trimmed.startsWith("[") && trimmed.endsWith("]"))) {
-                        try { return JSON.parse(trimmed); } catch { return v; }
+                        try { return JSON.parse(trimmed); } catch { /* fall through */ }
                       }
                       return v;
+                    };
+
+                    // Helper: render an object as a clean line
+                    const renderObject = (obj) => {
+                      // Pattern: {name, description}
+                      if (obj.name) {
+                        return <><strong className="text-gray-900">{obj.name}</strong>{obj.description ? <> — {obj.description}</> : ""}</>;
+                      }
+                      // Pattern: {criterion, weight}
+                      if (obj.criterion) {
+                        return <><strong className="text-gray-900">{obj.criterion}</strong>{obj.weight ? <span className="text-gray-400 ml-1">({obj.weight})</span> : ""}</>;
+                      }
+                      // Pattern: {title, ...anything}
+                      if (obj.title) {
+                        const rest = Object.entries(obj).filter(([k]) => k !== "title").map(([, v]) => String(v)).join(" · ");
+                        return <><strong className="text-gray-900">{obj.title}</strong>{rest ? <> — {rest}</> : ""}</>;
+                      }
+                      // Generic: first value bold, rest as details
+                      const entries = Object.entries(obj);
+                      if (entries.length <= 3) {
+                        const [first, ...rest] = entries;
+                        return <><strong className="text-gray-900">{String(first[1])}</strong>{rest.length > 0 ? <> — {rest.map(([, v]) => String(v)).join(" · ")}</> : ""}</>;
+                      }
+                      // Many keys: render as key: value pairs
+                      return entries.map(([k, v], j) => (
+                        <span key={k}>{j > 0 ? " · " : ""}<strong className="text-gray-900">{k}:</strong> {String(v)}</span>
+                      ));
                     };
 
                     // Helper: render a single item (object or string)
                     const renderItem = (item, i) => {
                       const parsed = tryParse(item);
-                      if (typeof parsed === "object" && parsed !== null) {
-                        if (parsed.name) {
-                          return (
-                            <div key={i} className="flex gap-2 mb-1.5">
-                              <span className="text-gray-400 mt-px">•</span>
-                              <span>
-                                <strong className="text-gray-900">{parsed.name}</strong>
-                                {parsed.description ? <> — {parsed.description}</> : ""}
-                              </span>
-                            </div>
-                          );
-                        }
-                        return (
-                          <div key={i} className="flex gap-2 mb-1.5">
-                            <span className="text-gray-400 mt-px">•</span>
-                            <span>
-                              {Object.entries(parsed).map(([k, v], j) => (
-                                <span key={k}>{j > 0 ? " · " : ""}<strong className="text-gray-900">{k}:</strong> {String(v)}</span>
-                              ))}
-                            </span>
-                          </div>
-                        );
-                      }
                       return (
                         <div key={i} className="flex gap-2 mb-1.5">
                           <span className="text-gray-400 mt-px">•</span>
-                          <span>{String(parsed)}</span>
+                          <span>
+                            {typeof parsed === "object" && parsed !== null
+                              ? renderObject(parsed)
+                              : String(parsed)}
+                          </span>
                         </div>
                       );
                     };
