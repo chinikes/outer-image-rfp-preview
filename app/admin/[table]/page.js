@@ -2,63 +2,78 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 
+const SERVICE_LINE_OPTIONS = ["Design Only", "Design + Build", "Fabrication Only"];
+const TIER_OPTIONS = ["Enterprise", "Mid-Market", "Government", "Non-Profit"];
+
 const tableConfig = {
   "team-bios": {
     label: "Team Bios",
     fields: [
       { key: "Name", type: "text", required: true },
       { key: "Title", type: "text", required: true },
+      { key: "Role", type: "select", options: ["Lead", "Design", "Fabrication", "Operations", "Production"] },
       { key: "Bio (Short)", type: "textarea" },
       { key: "Bio (Full)", type: "textarea" },
-      { key: "Service Lines", type: "multiselect", options: ["Design Only", "Design + Fabrication", "Fabrication Only"] },
+      { key: "Service Lines", type: "multiselect", options: SERVICE_LINE_OPTIONS },
       { key: "Certifications", type: "text" },
+      { key: "Portfolio Projects", type: "text" },
     ],
     displayField: "Name",
     subtitleField: "Title",
+    badgeField: "Role",
   },
   "client-references": {
     label: "Client References",
     fields: [
       { key: "Client Name", type: "text", required: true },
       { key: "Project Name", type: "text", required: true },
-      { key: "Service Line", type: "select", options: ["Design Only", "Design + Fabrication", "Fabrication Only"] },
+      { key: "Service Line", type: "select", options: SERVICE_LINE_OPTIONS },
       { key: "Project Description", type: "textarea" },
-      { key: "Client Tier", type: "select", options: ["Tier 1", "Tier 2", "Tier 3"] },
+      { key: "Client Tier", type: "select", options: TIER_OPTIONS },
       { key: "Contact Name", type: "text" },
-      { key: "Contact Info", type: "text" },
+      { key: "Contact Email", type: "text" },
+      { key: "Contact Phone", type: "text" },
+      { key: "Year", type: "text" },
     ],
     displayField: "Client Name",
     subtitleField: "Project Name",
+    badgeField: "Client Tier",
   },
   "portfolio": {
     label: "Portfolio",
     fields: [
       { key: "Project Name", type: "text", required: true },
-      { key: "Service Line", type: "select", options: ["Design Only", "Design + Fabrication", "Fabrication Only"] },
-      { key: "Client Tier", type: "select", options: ["Tier 1", "Tier 2", "Tier 3"] },
+      { key: "Client", type: "text" },
+      { key: "Service Line", type: "select", options: SERVICE_LINE_OPTIONS },
+      { key: "Client Tier", type: "select", options: TIER_OPTIONS },
       { key: "Summary", type: "textarea" },
+      { key: "Completion Date", type: "text" },
+      { key: "Portfolio URL", type: "text" },
       { key: "Project Type Tags", type: "text" },
     ],
     displayField: "Project Name",
     subtitleField: "Service Line",
+    badgeField: "Client Tier",
   },
   "rate-schedules": {
     label: "Rate Schedules",
     fields: [
-      { key: "Service Type", type: "select", options: ["Design Only", "Design + Fabrication", "Fabrication Only"] },
+      { key: "Service Type", type: "select", options: SERVICE_LINE_OPTIONS },
       { key: "Role / Line Item", type: "text", required: true },
       { key: "Rate", type: "text", required: true },
       { key: "Notes", type: "textarea" },
     ],
     displayField: "Role / Line Item",
     subtitleField: "Rate",
+    badgeField: "Service Type",
   },
   "boilerplate": {
     label: "Boilerplate Content",
     fields: [
       { key: "Section Name", type: "text", required: true },
       { key: "Content", type: "textarea", required: true },
-      { key: "Service Lines", type: "multiselect", options: ["Design Only", "Design + Fabrication", "Fabrication Only"] },
+      { key: "Service Lines", type: "multiselect", options: SERVICE_LINE_OPTIONS },
+      { key: "Last Updated", type: "text" },
     ],
     displayField: "Section Name",
     subtitleField: "Service Lines",
@@ -296,14 +311,43 @@ export default function TablePage() {
               className="flex items-center justify-between p-4 rounded-xl border border-gray-200 bg-white hover:border-gray-300 transition-all"
             >
               <div className="flex-1 min-w-0">
-                <div className="text-sm font-semibold text-gray-900 truncate">
-                  {r[config.displayField] || "Untitled"}
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-gray-900 truncate">
+                    {r[config.displayField] || "Untitled"}
+                  </span>
+                  {config.badgeField && r[config.badgeField] && (
+                    <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold bg-brand-teal/10 text-brand-teal border border-brand-teal/20">
+                      {r[config.badgeField]}
+                    </span>
+                  )}
                 </div>
                 <div className="text-xs text-gray-400 mt-0.5 truncate">
                   {Array.isArray(r[config.subtitleField])
                     ? r[config.subtitleField].join(", ")
                     : r[config.subtitleField] || ""}
                 </div>
+                {/* Service line tags */}
+                {(r["Service Lines"] || r["Service Line"] || r["Service Type"]) && (
+                  <div className="flex gap-1.5 mt-2 flex-wrap">
+                    {(Array.isArray(r["Service Lines"] || r["Service Line"] || r["Service Type"])
+                      ? (r["Service Lines"] || r["Service Line"] || r["Service Type"])
+                      : [(r["Service Lines"] || r["Service Line"] || r["Service Type"])]
+                    ).filter(Boolean).map((sl) => (
+                      <span
+                        key={sl}
+                        className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                          sl === "Design Only"
+                            ? "bg-blue-50 text-blue-700 border border-blue-200"
+                            : sl === "Design + Build"
+                            ? "bg-purple-50 text-purple-700 border border-purple-200"
+                            : "bg-amber-50 text-amber-700 border border-amber-200"
+                        }`}
+                      >
+                        {sl}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
               <div className="flex gap-2 ml-4">
                 <button
