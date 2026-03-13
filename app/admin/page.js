@@ -182,29 +182,69 @@ export default function ProposalViewPage() {
                   {key.replace(/([A-Z])/g, " $1").trim()}
                 </div>
                 <div className="text-[13px] text-gray-700 leading-relaxed">
-                  {Array.isArray(val)
-                    ? val.map((item, i) => (
+                  {(() => {
+                    // Helper: try to parse a stringified JSON value
+                    const tryParse = (v) => {
+                      if (typeof v !== "string") return v;
+                      const trimmed = v.trim();
+                      if ((trimmed.startsWith("{") && trimmed.endsWith("}")) || (trimmed.startsWith("[") && trimmed.endsWith("]"))) {
+                        try { return JSON.parse(trimmed); } catch { return v; }
+                      }
+                      return v;
+                    };
+
+                    // Helper: render a single item (object or string)
+                    const renderItem = (item, i) => {
+                      const parsed = tryParse(item);
+                      if (typeof parsed === "object" && parsed !== null) {
+                        if (parsed.name) {
+                          return (
+                            <div key={i} className="flex gap-2 mb-1.5">
+                              <span className="text-gray-400 mt-px">•</span>
+                              <span>
+                                <strong className="text-gray-900">{parsed.name}</strong>
+                                {parsed.description ? <> — {parsed.description}</> : ""}
+                              </span>
+                            </div>
+                          );
+                        }
+                        return (
+                          <div key={i} className="flex gap-2 mb-1.5">
+                            <span className="text-gray-400 mt-px">•</span>
+                            <span>
+                              {Object.entries(parsed).map(([k, v], j) => (
+                                <span key={k}>{j > 0 ? " · " : ""}<strong className="text-gray-900">{k}:</strong> {String(v)}</span>
+                              ))}
+                            </span>
+                          </div>
+                        );
+                      }
+                      return (
                         <div key={i} className="flex gap-2 mb-1.5">
                           <span className="text-gray-400 mt-px">•</span>
-                          <span>
-                            {typeof item === "object" && item !== null
-                              ? item.name
-                                ? <><strong className="text-gray-900">{item.name}</strong>{item.description ? <> — {item.description}</> : ""}</>
-                                : Object.entries(item).map(([k, v], j) => (
-                                    <span key={k}>{j > 0 ? " · " : ""}<strong className="text-gray-900">{k}:</strong> {String(v)}</span>
-                                  ))
-                              : String(item)}
-                          </span>
+                          <span>{String(parsed)}</span>
                         </div>
-                      ))
-                    : typeof val === "object" && val !== null
-                    ? Object.entries(val).map(([k, v]) => (
+                      );
+                    };
+
+                    // Main render
+                    const parsed = tryParse(val);
+
+                    if (Array.isArray(parsed)) {
+                      return parsed.map((item, i) => renderItem(item, i));
+                    }
+
+                    if (typeof parsed === "object" && parsed !== null) {
+                      return Object.entries(parsed).map(([k, v]) => (
                         <div key={k} className="mb-1">
                           <strong className="text-gray-900">{k.replace(/([A-Z])/g, " $1").trim()}:</strong>{" "}
                           {String(v)}
                         </div>
-                      ))
-                    : String(val ?? "")}
+                      ));
+                    }
+
+                    return String(val ?? "");
+                  })()}
                 </div>
               </div>
             ))}
