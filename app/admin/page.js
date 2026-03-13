@@ -8,11 +8,12 @@ const tables = [
   { slug: "portfolio", label: "Portfolio", icon: "📁", description: "Project summaries and case studies" },
   { slug: "rate-schedules", label: "Rate Schedules", icon: "💰", description: "Service rates and line items" },
   { slug: "boilerplate", label: "Boilerplate Content", icon: "📄", description: "Standard proposal text blocks" },
+  { slug: "project-schedules", label: "Project Schedules", icon: "📅", description: "Timeline templates by service line" },
 ];
 
 const SERVICE_LINES = [
   { name: "Design Only", color: "bg-blue-100 text-blue-700 border-blue-200" },
-  { name: "Design + Build", color: "bg-purple-100 text-purple-700 border-purple-200" },
+  { name: "Design + Fabrication", color: "bg-purple-100 text-purple-700 border-purple-200" },
   { name: "Fabrication Only", color: "bg-amber-100 text-amber-700 border-amber-200" },
 ];
 

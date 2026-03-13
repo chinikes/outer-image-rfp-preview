@@ -12,6 +12,7 @@ const tableMap = {
   "portfolio": "Portfolio",
   "rate-schedules": "Rate Schedules",
   "boilerplate": "Boilerplate Content",
+  "project-schedules": "Project Schedules",
 };
 
 export async function GET(req, { params }) {

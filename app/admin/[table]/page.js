@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 
-const SERVICE_LINE_OPTIONS = ["Design Only", "Design + Build", "Fabrication Only"];
+const SERVICE_LINE_OPTIONS = ["Design Only", "Design + Fabrication", "Fabrication Only"];
 const TIER_OPTIONS = ["Enterprise", "Mid-Market", "Government", "Non-Profit"];
 
 const tableConfig = {
@@ -77,6 +77,19 @@ const tableConfig = {
     ],
     displayField: "Section Name",
     subtitleField: "Service Lines",
+  },
+  "project-schedules": {
+    label: "Project Schedules",
+    fields: [
+      { key: "Template Name", type: "text", required: true },
+      { key: "Service Line", type: "select", options: SERVICE_LINE_OPTIONS, required: true },
+      { key: "Phases", type: "textarea", required: true },
+      { key: "Total Duration", type: "text" },
+      { key: "Notes", type: "textarea" },
+    ],
+    displayField: "Template Name",
+    subtitleField: "Service Line",
+    badgeField: "Service Line",
   },
 };
 
@@ -338,7 +351,7 @@ export default function TablePage() {
                         className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold ${
                           sl === "Design Only"
                             ? "bg-blue-50 text-blue-700 border border-blue-200"
-                            : sl === "Design + Build"
+                            : sl === "Design + Fabrication"
                             ? "bg-purple-50 text-purple-700 border border-purple-200"
                             : "bg-amber-50 text-amber-700 border border-amber-200"
                         }`}
