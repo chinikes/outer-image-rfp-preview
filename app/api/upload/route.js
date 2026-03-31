@@ -17,6 +17,7 @@ const ALLOWED_TYPES = [
   "application/pdf",
   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
   "application/vnd.ms-excel", // .xls
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
 ];
 
 export async function POST(request) {
@@ -34,7 +35,7 @@ export async function POST(request) {
 
     if (!ALLOWED_TYPES.includes(file.type)) {
       return NextResponse.json(
-        { error: "Invalid file type. Only PDF and Excel files are accepted." },
+        { error: "Invalid file type. Only PDF, Excel, and Word files are accepted." },
         { status: 400 }
       );
     }
@@ -59,7 +60,11 @@ export async function POST(request) {
     });
 
     // ---- Determine file type for n8n routing ----
-    const fileType = file.type === "application/pdf" ? "pdf" : "xlsx";
+    const fileType = file.type === "application/pdf" 
+      ? "pdf" 
+      : file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      ? "docx"
+      : "xlsx";
 
     // ---- Trigger n8n pipeline ----
     const callbackUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhook/status`;
