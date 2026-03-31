@@ -60,11 +60,20 @@ export async function POST(request) {
     });
 
     // ---- Determine file type for n8n routing ----
-    const fileType = file.type === "application/pdf" 
-      ? "pdf" 
-      : file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-      ? "docx"
-      : "xlsx";
+    let fileType = "xlsx";
+    let extractedDocxText = null;
+    
+    if (file.type === "application/pdf") {
+      fileType = "pdf";
+    } else if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+      fileType = "docx";
+      // Extract text from Word doc server-side
+      const mammoth = require("mammoth");
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      const result = await mammoth.extractRawText({ buffer });
+      extractedDocxText = result.value;
+    }
 
     // ---- Trigger n8n pipeline ----
     const callbackUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/webhook/status`;
@@ -74,6 +83,7 @@ export async function POST(request) {
       fileName: file.name,
       fileType,
       callbackUrl,
+      extractedText: extractedDocxText,
     });
 
     // If webhook fails, still return success but note the issue
