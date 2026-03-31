@@ -6,11 +6,11 @@
  *
  * This is the entry point for the entire automation system.
  */
-
 import { NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { createRfpRecord, updateRfpStatus } from "@/lib/airtable";
 import { triggerIntakeWorkflow } from "@/lib/n8n";
+import mammoth from "mammoth";
 
 // Accepted file types
 const ALLOWED_TYPES = [
@@ -32,14 +32,12 @@ export async function POST(request) {
         { status: 400 }
       );
     }
-
     if (!ALLOWED_TYPES.includes(file.type)) {
       return NextResponse.json(
         { error: "Invalid file type. Only PDF, Excel, and Word files are accepted." },
         { status: 400 }
       );
     }
-
     if (file.size > 20 * 1024 * 1024) {
       return NextResponse.json(
         { error: "File too large. Maximum size is 20MB." },
@@ -49,7 +47,7 @@ export async function POST(request) {
 
     // ---- Store in Vercel Blob ----
     const blob = await put(`rfps/${Date.now()}-${file.name}`, file, {
-      access: 'public',
+      access: "public",
       contentType: file.type,
     });
 
@@ -59,16 +57,17 @@ export async function POST(request) {
       fileUrl: blob.url,
     });
 
-    // ---- Determine file type for n8n routing ----
+    // ---- Determine file type and extract text if Word doc ----
     let fileType = "xlsx";
     let extractedDocxText = null;
-    
+
     if (file.type === "application/pdf") {
       fileType = "pdf";
-    } else if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+    } else if (
+      file.type ===
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    ) {
       fileType = "docx";
-      // Extract text from Word doc server-side
-      const mammoth = require("mammoth");
       const arrayBuffer = await file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
       const result = await mammoth.extractRawText({ buffer });
