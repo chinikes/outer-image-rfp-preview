@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 const SERVICE_LINE_OPTIONS = ["Design Only", "Design + Fabrication", "Fabrication Only"];
-const TIER_OPTIONS = ["Enterprise", "Mid-Market", "Government", "Non-Profit"];
+const TIER_OPTIONS = ["Corporate", "Government", "Non-Profit", "Mid-Market"];
 
 const tableConfig = {
   "team-bios": {
@@ -50,6 +50,7 @@ const tableConfig = {
       { key: "Completion Date", type: "text" },
       { key: "Portfolio URL", type: "text" },
       { key: "Project Type Tags", type: "text" },
+      { key: "Images / Links", type: "text" },
     ],
     displayField: "Project Name",
     subtitleField: "Service Line",
@@ -155,6 +156,14 @@ export default function TablePage() {
         if (value !== "" && value !== null && value !== undefined && !(Array.isArray(value) && value.length === 0)) {
           cleanFields[key] = value;
         }
+      }
+
+      // Convert Images / Links text to Airtable attachment format
+      if (cleanFields["Images / Links"] && typeof cleanFields["Images / Links"] === "string") {
+        cleanFields["Images / Links"] = cleanFields["Images / Links"]
+          .split(",")
+          .map(url => ({ url: url.trim() }))
+          .filter(a => a.url);
       }
 
       if (editing === "new") {
