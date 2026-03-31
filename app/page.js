@@ -20,11 +20,12 @@ export default function UploadPage() {
       f &&
       (f.name.endsWith(".pdf") ||
         f.name.endsWith(".xlsx") ||
-        f.name.endsWith(".xls"))
+        f.name.endsWith(".xls") ||
+        f.name.endsWith(".docx"))
     ) {
       setFile(f);
     } else {
-      setError("Only PDF and Excel files are accepted.");
+      setError("Only PDF, Excel, and Word files are accepted.");
     }
   }, []);
 
@@ -76,7 +77,7 @@ export default function UploadPage() {
           Upload RFP
         </h1>
         <p className="text-[15px] text-gray-500 mt-2 leading-relaxed">
-          Upload a PDF or Excel file. The system will extract requirements,
+          Upload a PDF, Excel, or Word file. The system will extract requirements,
           match your content library, and generate a proposal draft.
         </p>
       </div>
@@ -134,14 +135,14 @@ export default function UploadPage() {
                   <span className="text-brand-teal font-semibold underline">
                     browse files
                   </span>{" "}
-                  — PDF, XLSX, XLS accepted
+                  — PDF, XLSX, XLS, DOCX accepted
                 </div>
               </>
             )}
             <input
               id="file-input"
               type="file"
-              accept=".pdf,.xlsx,.xls"
+              accept=".pdf,.xlsx,.xls,.docx"
               onChange={handleSelect}
               className="hidden"
             />
@@ -213,7 +214,7 @@ export default function UploadPage() {
       {/* How It Works cards */}
       <div className="grid grid-cols-3 gap-4 mt-12">
         {[
-          { step: "1", title: "Upload", desc: "Drop your RFP file — PDF or Excel format" },
+          { step: "1", title: "Upload", desc: "Drop your RFP file — PDF, Excel, or Word format" },
           { step: "2", title: "AI Parses", desc: "Requirements extracted and classified automatically" },
           { step: "3", title: "Draft Ready", desc: "80–90% complete proposal in under 30 minutes" },
         ].map((item) => (
