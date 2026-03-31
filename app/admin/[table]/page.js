@@ -150,17 +150,24 @@ export default function TablePage() {
   async function handleSave() {
     setSaving(true);
     try {
+      const cleanFields = {};
+      for (const [key, value] of Object.entries(form)) {
+        if (value !== "" && value !== null && value !== undefined && !(Array.isArray(value) && value.length === 0)) {
+          cleanFields[key] = value;
+        }
+      }
+
       if (editing === "new") {
         await fetch(`/api/admin/${params.table}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ fields: form }),
+          body: JSON.stringify({ fields: cleanFields }),
         });
       } else {
         await fetch(`/api/admin/${params.table}/${editing}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ fields: form }),
+          body: JSON.stringify({ fields: cleanFields }),
         });
       }
       setEditing(null);
