@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 
-const SERVICE_LINE_OPTIONS = ["Design Only", "Design + Fabrication", "Fabrication Only"];
+const SERVICE_LINE_OPTIONS = ["Design Only", "Design + Fabrication","Fabrication + Installation" ,"Fabrication Only"];
 const TIER_OPTIONS = ["Corporate", "Government", "Non-Profit", "Mid-Market"];
 
 const tableConfig = {
