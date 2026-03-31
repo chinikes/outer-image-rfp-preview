@@ -43,7 +43,7 @@ const tableConfig = {
     label: "Portfolio",
     fields: [
       { key: "Project Name", type: "text", required: true },
-      { key: "Client", type: "text" },
+      { key: "Client Name", type: "text" },
       { key: "Service Line", type: "select", options: SERVICE_LINE_OPTIONS },
       { key: "Client Tier", type: "select", options: TIER_OPTIONS },
       { key: "Summary", type: "textarea" },
