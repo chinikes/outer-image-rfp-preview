@@ -64,31 +64,44 @@ export async function POST(request) {
 
     console.log("Updating Airtable record:", recordId, "with fields:", Object.keys(updateFields));
 
+    const fieldErrors = [];
+
+    // First: update status + all fields together
     try {
       await updateRfpStatus(recordId, status, updateFields);
+      return NextResponse.json({ success: true, recordId, status });
     } catch (airtableError) {
-      // Log the detailed error but try a minimal update (status only)
       console.error("Airtable full update failed:", airtableError.message);
-      console.error("Attempted fields:", JSON.stringify(updateFields).substring(0, 500));
-      
+      fieldErrors.push(`bulk: ${airtableError.message}`);
+    }
+
+    // Fallback: update status alone first
+    try {
+      await updateRfpStatus(recordId, status, {});
+      console.log("Status-only update succeeded");
+    } catch (fallbackError) {
+      console.error("Even status-only update failed:", fallbackError.message);
+      return NextResponse.json(
+        { error: `Airtable update failed: ${fallbackError.message}` },
+        { status: 500 }
+      );
+    }
+
+    // Then try each extra field individually
+    for (const [fieldName, fieldValue] of Object.entries(updateFields)) {
       try {
-        // Fallback: just update the status without extra fields
-        await updateRfpStatus(recordId, status, {});
-        console.log("Fallback status-only update succeeded");
-        return NextResponse.json({ 
-          success: true, recordId, status, 
-          warning: "Status updated but extra fields failed — check Airtable field names" 
-        });
-      } catch (fallbackError) {
-        console.error("Even status-only update failed:", fallbackError.message);
-        return NextResponse.json(
-          { error: `Airtable update failed: ${fallbackError.message}` },
-          { status: 500 }
-        );
+        await updateRfpStatus(recordId, status, { [fieldName]: fieldValue });
+        console.log(`Field "${fieldName}" saved successfully`);
+      } catch (fieldError) {
+        console.error(`Field "${fieldName}" failed:`, fieldError.message);
+        fieldErrors.push(`${fieldName}: ${fieldError.message}`);
       }
     }
 
-    return NextResponse.json({ success: true, recordId, status });
+    return NextResponse.json({ 
+      success: true, recordId, status,
+      warning: `Some fields failed individually: ${fieldErrors.join("; ")}` 
+    });
   } catch (error) {
     console.error("Webhook status error:", error);
     return NextResponse.json(
